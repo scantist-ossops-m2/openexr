@@ -309,7 +309,6 @@ MultiPartInputFile::initialize ()
         throw IEX_NAMESPACE::InputExc (
             "Multipart files cannot have the tiled bit set");
 
-    int pos = 0;
     while (true)
     {
         Header header;
@@ -321,7 +320,6 @@ MultiPartInputFile::initialize ()
 
         if (header.readsNothing ())
         {
-            pos++;
             break;
         }
 

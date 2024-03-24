@@ -1608,7 +1608,7 @@ readCoreTiledPart (
         }
     }
 
-    return (rv != EXR_ERR_SUCCESS);
+    return (frv != EXR_ERR_SUCCESS);
 }
 
 ////////////////////////////////////////
