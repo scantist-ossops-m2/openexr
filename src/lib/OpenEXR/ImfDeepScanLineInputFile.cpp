@@ -628,6 +628,11 @@ LineBufferTask::execute ()
 
                 _lineBuffer->format = Compressor::XDR;
                 _lineBuffer->uncompressedData = _lineBuffer->buffer;
+
+                if(_lineBuffer->packedDataSize!=maxBytesPerLine)
+                {
+                    THROW (IEX_NAMESPACE::InputExc, "Incorrect size for uncompressed data. Expected " << maxBytesPerLine << " got " << _lineBuffer->packedDataSize << " bytes");
+                }
             }
         }
 
@@ -1956,14 +1961,20 @@ readSampleCountForLineBlock(InputStreamMutex* streamData,
     // @TODO refactor the compressor code to ensure full 64-bit support.
     //
 
-    int compressorMaxDataSize = std::numeric_limits<int>::max();
-    if (sampleCountTableDataSize > uint64_t(compressorMaxDataSize))
+    uint64_t compressorMaxDataSize = static_cast<uint64_t>(std::numeric_limits<int>::max());
+    if (packedDataSize         > compressorMaxDataSize ||
+        unpackedDataSize > compressorMaxDataSize ||
+        sampleCountTableDataSize        > compressorMaxDataSize)
     {
-        THROW (IEX_NAMESPACE::ArgExc, "This version of the library does not "
-              << "support the allocation of data with size  > "
-              << compressorMaxDataSize
-              << " file table size    :" << sampleCountTableDataSize << ".\n");
+        THROW (IEX_NAMESPACE::ArgExc, "This version of the library does not"
+            << "support the allocation of data with size  > "
+            << compressorMaxDataSize
+            << " file table size    :" << sampleCountTableDataSize
+            << " file unpacked size :" << unpackedDataSize
+            << " file packed size   :" << packedDataSize << ".\n");
     }
+
+
     streamData->is->read(data->sampleCountTableBuffer, static_cast<int>(sampleCountTableDataSize));
     
     const char* readPtr;
