@@ -1050,10 +1050,7 @@ hufUncompress (const char compressed[],
 	       unsigned short raw[],
 	       int nRaw)
 {
-    //
-    // nead at least 20 bytes for header
-    //
-    if (nCompressed < 20 )
+    if (nCompressed == 0)
     {
 	if (nRaw != 0)
 	    notEnoughData();
@@ -1073,8 +1070,7 @@ hufUncompress (const char compressed[],
 
     if ( ptr + (nBits+7 )/8 > compressed+nCompressed)
     {
-        notEnoughData();
-        return;
+        throw Iex::InputExc("invalid bit count for data size in Huf data");
     }
 
     // 
