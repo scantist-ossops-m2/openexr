@@ -2532,7 +2532,7 @@ DwaCompressor::uncompress
 
     if (acCompressedSize > 0)
     {
-        if ( !_packedAcBuffer || totalAcUncompressedCount*sizeof(unsigned short) > _packedAcBufferSize)
+        if (totalAcUncompressedCount*sizeof(unsigned short) > _packedAcBufferSize)
         {
             throw IEX_NAMESPACE::InputExc("Error uncompressing DWA data"
                                 "(corrupt header).");
