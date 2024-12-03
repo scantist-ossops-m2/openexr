@@ -65,12 +65,11 @@
 
 #include "Iex.h"
 
+#include <algorithm>
+#include <assert.h>
 #include <string>
 #include <vector>
-#include <assert.h>
 #include <limits>
-#include <algorithm>
-
 
 #include "ImfNamespace.h"
 OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
@@ -648,6 +647,11 @@ LineBufferTask::execute ()
 
                 _lineBuffer->format = Compressor::XDR;
                 _lineBuffer->uncompressedData = _lineBuffer->buffer;
+
+                if(_lineBuffer->packedDataSize!=maxBytesPerLine)
+                {
+                    THROW (IEX_NAMESPACE::InputExc, "Incorrect size for uncompressed data. Expected " << maxBytesPerLine << " got " << _lineBuffer->packedDataSize << " bytes");
+                }
             }
         }
 
